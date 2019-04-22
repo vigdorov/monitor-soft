@@ -1,1 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
+
+.body-invisible {
+  visibility: collapse;
+}
+
+.fa-times:hover {
+  color: #dd3949;
+}
