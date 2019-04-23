@@ -131,12 +131,14 @@ let Popup = function (type) {
           app.message.createMsg({
             header: 'Запись изменена',
             text: 'Отредактирована запись №' + state.editIndex,
+            color: 'warning',
           });
         } else {
           state.date.unshift(note);
           app.message.createMsg({
             header: 'Запись добавлена',
             text: 'Добавлена запись в начало таблицы',
+            color: 'success',
           });
         }
 
@@ -148,11 +150,14 @@ let Popup = function (type) {
 
   // Функция, которая помещает инициализированную форму в модальное окно
   this.render = function () {
+    if (type === 'add') {
+      date.body = new AddTask();
+    }
+
     header.textContent = date.header;
 
     body.innerHTML = '';
     body.appendChild( date.body.getForm() );
-    date.body.clearForm();
 
     if (state.editIndex > -1) {
       date.body.setForm(state.editIndex);

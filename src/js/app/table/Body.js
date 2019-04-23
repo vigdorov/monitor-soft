@@ -6,7 +6,11 @@ let Body = function (table, fixed) {
     tbody.classList.add('body-invisible');
   }
 
-  for (let i = 0; i < state.date.length; i++) {
+  let startIndex = state.currentPage * state.countStringOnPage;
+  let endIndex = Math.min(startIndex + state.countStringOnPage,
+                          state.date.length);
+
+  for (let i = startIndex; i < endIndex; i++) {
     let tr = createDOMElement({
       tagName: 'tr',
       parent: tbody,
@@ -25,7 +29,7 @@ let Body = function (table, fixed) {
         state.editIndex = i;
         tr.classList.add('table-warning');
 
-        app.buttonAddEditTask.textContent = 'Редактировать запись';
+        app.buttonAddEditTask.textContent = 'Редактировать';
         app.buttonAddEditTask.classList.add('btn-warning');
 
         app.buttonDeleteTask.classList.remove('invisible');
@@ -34,6 +38,7 @@ let Body = function (table, fixed) {
         app.message.createMsg({
           header: 'Ошибка доступа',
           text: 'Для работы с таблицей - авторизуйтесь',
+          color: 'danger',
         });
       }
     });

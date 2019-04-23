@@ -17,11 +17,13 @@ let Notification = function () {
   // Функция принимает сообщение в виде объекта (заголовок и текст)
   this.createMsg = function (msg) {
 
+    let color = msg.color || 'info';
+
     let body = createDOMElement({
       tagName: 'div',
       parent: div,
       property: {
-        className: 'alert alert-warning alert-dismissible fade show',
+        className: 'alert alert-dismissible fade show alert-' + color,
       },
       attributes: {
         role: 'alert',

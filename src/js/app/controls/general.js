@@ -2,7 +2,7 @@ let GeneralControls = function () {
 
   // Функция сбрасывает значение кнопок на нижней панели к исходному значению
   this.refreshAppButtons = function () {
-    app.buttonAddEditTask.textContent = 'Добавить запись';
+    app.buttonAddEditTask.textContent = 'Добавить';
     app.buttonAddEditTask.classList.remove('btn-warning');
 
     if (state.editIndex > -1) {
@@ -47,6 +47,7 @@ let GeneralControls = function () {
     app.message.createMsg({
       header: 'Запись удалена',
       text: 'Удалена строка №' + (state.editIndex + 1),
+      color: 'danger',
     });
     state.date.splice(state.editIndex, 1);
     state.editIndex = -1;
@@ -69,6 +70,7 @@ let GeneralControls = function () {
   let buttonUpdate = document.getElementById('update-button');
   buttonUpdate.addEventListener('click', () => {
     buttonUpdate.blur();
+    state.currentPage = 0;
     app.getStorage(true);
     app.setStorage();
     app.table.render(app.parent);

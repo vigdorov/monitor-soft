@@ -27,6 +27,8 @@ module.exports = {
   },
   optimization: optimization,
   devServer: {
+    useLocalIp: true,
+    host: '0.0.0.0',
     compress: true,
     port: 8000,
     open: 'Chrome',

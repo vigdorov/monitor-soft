@@ -1,5 +1,6 @@
 let Header = require ('./Header');
 let Body   = require ('./Body');
+let Pagination = require('./Pagination');
 
 let Table = function () {
 
@@ -20,6 +21,7 @@ let Table = function () {
   */
 
   this.render = function (parent) {
+    state.editIndex = -1;
     parent.innerHTML = '';
 
     for (let i = 0; i <= 1; i++) {
@@ -40,6 +42,11 @@ let Table = function () {
 
       let header = new Header(table);
       let body   = new Body(table, i);
+
+      if (i === 0) {
+        this.pagination = new Pagination(parent);
+      }
+
 
     }
 
