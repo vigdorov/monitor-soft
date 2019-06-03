@@ -1,74 +1,44 @@
-# Тестовое задание от компании Монитор Софт
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Задача:
+## Available Scripts
 
-1. **Выполнено.** Необходимо сверстать таблицу при помощи фреймворка
-Bootstrap 4 (или аналогичного)
-2. **Выполнено.** Наполнить таблицу данными, которые поступают через API
-3. **Выполнено.** Реализовать пагинацию через сервер, без перезагрузки
-4. **Выполнено.** Создать страницу с кнопкой создания объекта, которая
-открывает форму в модальном окне. После создания объекта,
-необходимо отобразить его на этой же странице и показать
-кнопки редактирования и удаления. Редактирование должно
-открывать модальное окно с формой редактирования текущего
-объекта. Кнопка удаления, соответственно, удаляет объект. Все
-действия должны происходить без перезагрузки.
-5. **Выполнено.** Создать форму для регистрации и аутентификации
-пользователя
-6. **Выполнено.** Закрыть возможность любого действия, если пользователь не
-авторизован
-7. **Выполнено.** Создать систему оповещений об ответах сервера (на основе
-статуса HTTP ответа выводить сообщение для пользователя;
-например: “Данные получены за N секунд”, “Данные
-сохранены. ID: 356”, “Данные обновлены”, “Данные удалены”)
+In the project directory, you can run:
 
-## Условия
-### Верстка:
-1. **Выполнено.** Первая строка таблицы (заголовок) должна быть привязана и
-оставаться на месте при прокрутке таблицы
-2. **Выполнено.** Таблица должна быть готова к использованию на мобильных
-устройствах (реализация не важна, на усмотрение
-разработчика)
-3. При загрузке данных с сервера должен быть loader
-4. **Выполнено.** Оповещения должны быть в виде небольших окошек в углу окна
-браузера. Оповещения должны автоматически скрываться по
-истечению 5 секунд или при клике по ним. Оповещений может
-быть несколько сразу
+### `npm start`
 
-### Код:
-1. Приветствуется использование фреймворков в следующем
-порядке: Angular 4+, Vue, React, AngularJS, jQuery
-2. Может быть использован любой из следующих языков:
-TypeScript, **JavaScript**
-3. **Выполнено.** Приложение должно использовать npm (либо аналогичный
-пакетный менеджер) для установки требуемых пакетов, в т.ч. и Bootstrap
-4. _**Старался реализовать.**_ Приложение должно быть объектно-ориентированным
-5. **Выполнено.** Код должен быть полностью покрыт комментариями
-6. **Выполнено.** При разработке необходимо использовать Git
-7. **Выполнено.** Должен быть создан и наполнен файл README.md, с описанием
-проекта, инструкцией запуска
-8. Необходимо использовать любой из стандартов code style
-(используемый указать в README)
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### Плюсом будет:
-1. Покрытие приложения тестами
-2. Автоматическая генерация документации
-3. Обертка приложения в docker контейнер
-4. Настройка CI (на усмотрения разработчика: GitLab, Travis и
-т.д.) для автоматического тестирования при коммите
+The page will reload if you make edits.<br>
+You will also see any lint errors in the console.
 
-## Запуск проекта:
+### `npm test`
 
-Зайти в папку serverForDate и запустить сервер API:
+Launches the test runner in the interactive watch mode.<br>
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-```node
-node server
-```
+### `npm run build`
 
-Из корня проекта запустить сервер разработки:
+Builds the app for production to the `build` folder.<br>
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-```npm
-npm start
-```
+The build is minified and the filenames include the hashes.<br>
+Your app is ready to be deployed!
 
-Проект запустить в Chrome.
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
