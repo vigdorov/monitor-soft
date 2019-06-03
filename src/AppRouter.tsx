@@ -1,26 +1,26 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import NavBar from './NavBar'
 import General from './general/General';
 import Table from './table/Table';
 import Objects from './objects/Objects';
 import SigIn from './sigin/SigIn';
+import logo from './img/logo.png';
 
 const pages: Pages = {
   '/': {
-    name: 'General',
+    name: 'Главная',
     component: General
   },
   '/table/': {
-    name: 'Table',
+    name: 'Таблица',
     component: Table
   },
   '/objects/': {
-    name: 'Objects',
+    name: 'Объекты',
     component: Objects
   },
   '/sigin/': {
-    name: 'SigIn',
+    name: 'Авторизация',
     component: SigIn
   }
 };
@@ -41,9 +41,46 @@ export default function AppRouter () {
     }
   }
 
+  let links: Pages = pages,
+    linkRender: any[] = [];
+
+  for (let route in links) {
+    linkRender.push(
+      <li className="nav-item nav-link" key={route}>
+        <Link to={route}>
+          {links[route].name}
+        </Link>
+      </li>
+    );
+  }
+
   return (
     <Router>
-      <NavBar links={pages}/>
+      <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+        <a href="/" className="navbar-brand">
+          <img src={logo} alt="Monitor Soft" height={50} />
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        <div
+          className="collapse navbar-collapse"
+          id="navbarNavAltMarkup"
+        >
+          <div className="navbar-nav">
+            {linkRender}
+          </div>
+        </div>
+      </nav>
       {routingList}
     </Router>
   );
@@ -52,6 +89,6 @@ export default function AppRouter () {
 export interface Pages {
   [route: string]: {
     name: string,
-    component: () => JSX.Element
+    component: any
   }
 }
