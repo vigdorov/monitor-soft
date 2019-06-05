@@ -1,16 +1,34 @@
+// Подключение React
 import * as React from 'react';
-import {Button, Modal, Form} from 'react-bootstrap';
+
+// Подключение bootstrap на основе React
+import { Button, Modal, Form } from 'react-bootstrap';
+
+// Подключение фабрики создания домов
+import { FactoryHouses } from './FactoryHouses';
 
 export default class AddObject extends React.Component<Props, State> {
 
   constructor (props: Props) {
     super(props);
+
+    /**
+     *
+     * @param {FactoryHouses} factory - объект фабрики домов
+     * @param {boolean} show - показывать\не показывать Модальное окно
+     * @param {number} choice - состояние выбора дома для постройки
+     */
     this.state = {
+      factory: FactoryHouses.getInstance(),
       show: false,
       choice: 0,
-    }
+    };
   }
 
+  /**
+   * Метод закрывает Модальное окно создания дома и
+   * сбрасывает его состояние на изначальное
+   */
   handleClose = () => {
     this.setState({
       show: false,
@@ -18,10 +36,18 @@ export default class AddObject extends React.Component<Props, State> {
     });
   };
 
+  /**
+   * Метод показывает Модальное окно создания дома
+   */
   handleShow = () => {
     this.setState({ show: true });
   };
 
+  /**
+   * Метод изменения состояния текущего выбора дома для построки
+   *
+   * @param e - объект события
+   */
   handleChange = (e: any) => {
     let {value} = e.target;
     this.setState({
@@ -29,25 +55,34 @@ export default class AddObject extends React.Component<Props, State> {
     });
   };
 
+  /**
+   * Метод отрисовки кнопки и Модального окна создания дома
+   *
+   * @returns {any} - возвращает объект JSX для рендера
+   */
   render () {
+
     return (
       <React.Fragment>
         <Button variant="success" onClick={this.handleShow}>
-          Создать объект
+          Построить здание
         </Button>
 
         <Modal show={this.state.show} onHide={this.handleClose} centered>
           <Modal.Header closeButton>
-            <Modal.Title>Создать объект</Modal.Title>
+            <Modal.Title>Построить здание</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="exampleForm.ControlSelect">
-                <Form.Label>Выберете объект, который нужно построить:</Form.Label>
+                <Form.Label>Выберете здание, которое нужно построить:</Form.Label>
                 <Form.Control as="select" onChange={this.handleChange}>
-                  <option value={0}>Гараж</option>
-                  <option value={1}>Квартира</option>
-                  <option value={2}>Частный дом</option>
+                  {
+                    // Создаем список домов
+                    this.state.factory.getNamesInstructions().map(
+                      (name, i) => (<option key={i} value={i}>{name}</option>)
+                    )
+                  }
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -59,10 +94,10 @@ export default class AddObject extends React.Component<Props, State> {
             <Button
               variant="primary"
               onClick={() => {
-                this.props.onCreateHouse(Number(this.state.choice));
+                this.props.onCreateHouse(this.state.choice);
                 this.handleClose();
               }}>
-              Создать
+              Построить
             </Button>
           </Modal.Footer>
         </Modal>
@@ -76,6 +111,7 @@ interface Props {
 }
 
 interface State {
+  factory: FactoryHouses,
   show: boolean,
   choice: number
 }
