@@ -1,6 +1,10 @@
+// Подключаем React
 import * as React from 'react';
-import {Card} from 'react-bootstrap';
 
+// Подключение bootstrap элементов на основе React
+import { Card } from 'react-bootstrap';
+
+// Компонент главной страницы
 export default function General () {
   return (
     <div className="container">

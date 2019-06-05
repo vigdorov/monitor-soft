@@ -1,11 +1,19 @@
+// Подключаем React
 import * as React from 'react';
+
+// Подключаем Router для маршрутизации
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+// Подключаем наши страницы сайта
 import General from './general/General';
 import Table from './table/Table';
 import Objects from './objects/Objects';
 import SigIn from './sigin/SigIn';
+
+// Подключаем логотип страницы
 import logo from './img/logo.png';
 
+// Объект, который содержит пути страниц, их названия для меню и компоненты
 const pages: Pages = {
   '/': {
     name: 'Главная',
@@ -27,12 +35,15 @@ const pages: Pages = {
 
 export default function AppRouter () {
 
+  // Массив где будут хранится все страницы
   let routingList: any[] = [];
 
+  // Добавляем главную страницу в массив
   routingList.push(
     <Route path='/' exact component={General} key='/'/>
   );
 
+  // Генерируем все остальные страницы, используя объект pages
   for (let route in pages) {
     if (route !== '/') {
       routingList.push(
@@ -41,6 +52,7 @@ export default function AppRouter () {
     }
   }
 
+  // Генерируем элементы главного меню
   let links: Pages = pages,
     linkRender: any[] = [];
 

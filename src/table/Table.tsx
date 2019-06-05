@@ -1,8 +1,15 @@
+// Подключаем React
 import * as React from 'react';
+
+// Подключение библиотеки axios
 import axios from 'axios';
-import {Table as TableBT, Pagination, Row, Container, Spinner, Alert} from 'react-bootstrap';
+
+// Подключаем элементы bootstrap разработанные на React
+import { Container, Row, Spinner, Alert } from 'react-bootstrap';
+import  {Table as TableBT, Pagination } from 'react-bootstrap';
 
 export default class Table extends React.Component<Props, State> {
+  source: any;
 
   constructor (props: Props) {
     super(props);
@@ -11,34 +18,59 @@ export default class Table extends React.Component<Props, State> {
       data: [],
       page: 1,
       totalPages: 4
-    }
+    };
+
+    this.source = axios.CancelToken.source();
   }
 
   getData = () => {
     this.setState({
       data: []
     });
-    setTimeout( () => {
-      axios.get('https://reqres.in/api/page=?page=' + this.state.page)
-        .then( response => {
-          this.setState({
-            data: response.data.data,
-            page: response.data.page,
-            totalPages: response.data['total_pages']
-          });
-        });
-    }, 1000);
+    /**
+     * Генерируем задержку, для имитации загрузки данных с сервера и
+     * демонстрации работы loader'а
+     */
+    let delay  = Math.floor(Math.random() * 3),
+        server = `https://reqres.in/api/page?`,
+        url    = `${server}delay=${delay}&page=${this.state.page}`;
 
+    axios.get( url, { cancelToken: this.source.token })
+      .then( response => {
+        this.setState({
+          data: response.data.data,
+          page: response.data.page,
+          totalPages: response.data['total_pages']
+        });
+      });
   };
 
+  /**
+   * Метод переключения страницы таблицы, по завершению которого выполняется
+   * повторный запрос к серверу
+   *
+   * @param {number} pageNumber
+   */
   handleChangePage = (pageNumber: number) => {
     this.setState({
       page: pageNumber
     }, this.getData);
   };
 
+  /**
+   * При монтировании компонента выполняет первичный запрос к серверу
+   * для полученния данных первой страницы таблицы
+   */
   componentDidMount () {
     this.getData();
+  }
+
+  /**
+   * При размонтировании компонента отменяем запрос к серверу,
+   * если они существуют
+   */
+  componentWillUnmount () {
+    this.source.cancel('Запрос отменен из-за переключения вкладки');
   }
 
   render () {

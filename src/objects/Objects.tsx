@@ -115,7 +115,7 @@ export default class Objects extends React.Component<{}, State> {
     if (isNaN(Number(inputValue))) {
       return 'Допускаются только числа!';
     }
-    if (Number(inputValue) < 1 || Number(inputValue) >= 10) {
+    if (Number(inputValue) < 1 || Number(inputValue) > 10) {
       return 'Значение не может быть меньше 1 и больше 10!';
     }
     return '';
@@ -218,6 +218,7 @@ export default class Objects extends React.Component<{}, State> {
               </Form.Group>
               <FormGroup
                 id='modalEditRooms'
+                type='text'
                 label="Количество комнат:"
                 value={this.state.modalEditRooms}
                 placeholder="Введите количество комнат"
@@ -226,6 +227,7 @@ export default class Objects extends React.Component<{}, State> {
               />
               <FormGroup
                 id='modalEditFloors'
+                type='text'
                 label="Количество этажей:"
                 value={this.state.modalEditFloors}
                 placeholder="Введите количество этажей"

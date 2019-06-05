@@ -1,44 +1,88 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Этот проект был создан с помощью [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Доступные команды
 
-In the project directory, you can run:
+В директории проекта вы можете использовать следующие команды:
+
+### `npm install`
+
+Выполните эту команду перед первым запуском, чтобы скачать все необходимые библиотеки для работы приложения
 
 ### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Запустит приложение в режиме разработки.<br>
+Страница [http://localhost:3000](http://localhost:3000) автоматически откроется в браузере. Так же проект будет доступен в сети по адресу вашего IP
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Страница будет перезагружена после внесения изменений в файлы проекта.<br>
+Ошибки сгенерированные lint'ером будут отображаться в консоли.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Соберет проект для размещения его на сервере и поместит в папку `build`.<br>
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### Дополнительная информация:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Проект является тестовым заданием от компании Монитор Софт.
 
-### `npm run eject`
+В проекте использованы следующие технологии.
+* Язык программирования: **TypeScript**
+* Фреймворк: **React (create-react-app)**, **Bootstrap**
+* Code style: **AirBNB**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+##### Задача:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Необходимо сверстать таблицу при помощи фреймворка
+Bootstrap 4 (или аналогичного)
+2. Наполнить таблицу данными, которые поступают через API
+3. Реализовать пагинацию через сервер, без перезагрузки
+4. Создать страницу с кнопкой создания объекта, которая
+открывает форму в модальном окне. После создания объекта,
+необходимо отобразить его на этой же странице и показать
+кнопки редактирования и удаления. Редактирование должно
+открывать модальное окно с формой редактирования текущего
+объекта. Кнопка удаления, соответственно, удаляет объект. Все
+действия должны происходить без перезагрузки.
+5. Создать форму для регистрации и аутентификации
+пользователя
+6. Закрыть возможность любого действия, если пользователь не
+авторизован
+7. Создать систему оповещений об ответах сервера (на основе
+статуса HTTP ответа выводить сообщение для пользователя;
+например: “Данные получены за N секунд”, “Данные
+сохранены. ID: 356”, “Данные обновлены”, “Данные удалены”)
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+##### Верстка:
+1. Первая строка таблицы (заголовок) должна быть привязана и
+оставаться на месте при прокрутке таблицы
+2. Таблица должна быть готова к использованию на мобильных
+устройствах (реализация не важна, на усмотрение
+разработчика)
+3. При загрузке данных с сервера должен быть loader
+4. Оповещения должны быть в виде небольших окошек в углу окна
+браузера. Оповещения должны автоматически скрываться по
+истечению 5 секунд или при клике по ним. Оповещений может
+быть несколько сразу
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+##### Код:
+1. Приветствуется использование фреймворков в следующем
+порядке: Angular 4+, Vue, React, AngularJS, jQuery
+2. Может быть использован любой из следующих языков:
+TypeScript, JavaScript
+3. Приложение должно использовать npm (либо аналогичный
+пакетный менеджер) для установки требуемых пакетов, в т.ч. и Bootstrap
+4. Приложение должно быть объектно-ориентированным
+5. Код должен быть полностью покрыт комментариями
+6. При разработке необходимо использовать Git
+7. Должен быть создан и наполнен файл README.md, с описанием
+проекта, инструкцией запуска
+8. Необходимо использовать любой из стандартов code style
+(используемый указать в README)
 
-## Learn More
+##### Плюсом будет:
+1. Покрытие приложения тестами
+2. Автоматическая генерация документации
+3. Обертка приложения в docker контейнер
+4. Настройка CI (на усмотрения разработчика: GitLab, Travis и
+т.д.) для автоматического тестирования при коммите
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
