@@ -13,94 +13,152 @@ import SigIn from './sigin/SigIn';
 // Подключаем логотип страницы
 import logo from './img/logo.png';
 
-// Объект, который содержит пути страниц, их названия для меню и компоненты
-const pages: Pages = {
-  '/': {
-    name: 'Главная',
-    component: General
-  },
-  '/table/': {
-    name: 'Таблица',
-    component: Table
-  },
-  '/objects/': {
-    name: 'Объекты',
-    component: Objects
-  },
-  '/sigin/': {
-    name: 'Авторизация',
-    component: SigIn
+// Подключаем систему уведомлений
+import Notify from './notification/notify';
+
+// Подключаем авторизацию
+import Auth from './sigin/Auth';
+
+const auth = new Auth();
+
+export default class AppRouter extends React.Component<{}, State> {
+
+  constructor (props: {}) {
+    super(props);
+    this.state = {
+      isLogin: false,
+      messages: {
+        counter: 0,
+        data: {}
+      }
+    };
   }
-};
 
-export default function AppRouter () {
+  componentDidMount () {
+    this.isAuthenticated();
+  }
 
-  // Массив где будут хранится все страницы
-  let routingList: any[] = [];
+  handleNotify = (msg: string) => {
+    let id: number;
+    this.setState( prevState => {
+      id = prevState.messages.counter;
+      return {
+        messages: {
+          ...prevState.messages,
+          counter: id + 1,
+          data: {
+            ...prevState.messages.data,
+            [id]: msg
+          }
+        }
+      };
+    }, () => {
+      setTimeout( () => {
+        delete this.state.messages.data[id];
+      }, 5000);
+    });
+  };
 
-  // Добавляем главную страницу в массив
-  routingList.push(
-    <Route path='/' exact component={General} key='/'/>
-  );
-
-  // Генерируем все остальные страницы, используя объект pages
-  for (let route in pages) {
-    if (route !== '/') {
-      routingList.push(
-        <Route path={route} component={pages[route].component} key={route}/>
-      );
+  isAuthenticated = () => {
+    let isAuth = auth.isAuthenticated();
+    if ( isAuth !== this.state.isLogin) {
+      this.setState({
+        isLogin: isAuth
+      });
     }
-  }
+  };
 
-  // Генерируем элементы главного меню
-  let links: Pages = pages,
-    linkRender: any[] = [];
+  render () {
+    let protectedLinks = (
+      <React.Fragment>
+        <li className="nav-item nav-link">
+          <Link to='/table/'>
+            Таблицы
+          </Link>
+        </li>
+        <li className="nav-item nav-link">
+          <Link to='/objects/'>
+            Объекты
+          </Link>
+        </li>
+      </React.Fragment>
+    );
 
-  for (let route in links) {
-    linkRender.push(
-      <li className="nav-item nav-link" key={route}>
-        <Link to={route}>
-          {links[route].name}
-        </Link>
-      </li>
+    let protectedPages = (
+      <React.Fragment>
+        <Route path='/table/' component={() => {
+          return <Table />
+        }} />
+        <Route path='/objects/' component={() => {
+          return <Objects onMsg={this.handleNotify}/>
+        }} />
+      </React.Fragment>
+    );
+
+    return (
+      <Router>
+        <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+          <a href="/" className="navbar-brand">
+            <img src={logo} alt="Monitor Soft" height={50} />
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
+
+          <div
+            className="collapse navbar-collapse"
+            id="navbarNavAltMarkup"
+          >
+            <div className="navbar-nav">
+              <li className="nav-item nav-link">
+                <Link to='/'>
+                  Главная
+                </Link>
+              </li>
+              {
+                this.state.isLogin && protectedLinks
+              }
+              <li className="nav-item nav-link">
+                <Link to='/sigin/'>
+                  {this.state.isLogin ? 'Личный кабинет' : 'Авторизация'}
+                </Link>
+              </li>
+            </div>
+          </div>
+        </nav>
+        <Route path='/' exact component={() => <General />} />
+        {
+          this.state.isLogin && protectedPages
+        }
+        <Route path='/sigin/' component={() => {
+          return (
+            <SigIn
+              auth={auth}
+              onAuth={this.isAuthenticated}
+              onMsg={this.handleNotify}
+            />
+          );
+        }} />
+        <Notify messages={this.state.messages.data} />
+      </Router>
     );
   }
-
-  return (
-    <Router>
-      <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
-        <a href="/" className="navbar-brand">
-          <img src={logo} alt="Monitor Soft" height={50} />
-        </a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-
-        <div
-          className="collapse navbar-collapse"
-          id="navbarNavAltMarkup"
-        >
-          <div className="navbar-nav">
-            {linkRender}
-          </div>
-        </div>
-      </nav>
-      {routingList}
-    </Router>
-  );
 }
 
-export interface Pages {
-  [route: string]: {
-    name: string,
-    component: any
+interface State {
+  isLogin: boolean,
+  messages: {
+    counter: number,
+    data: {
+      [id: number]: string
+    }
   }
 }

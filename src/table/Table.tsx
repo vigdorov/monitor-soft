@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // Подключаем элементы bootstrap разработанные на React
 import { Container, Row, Spinner, Alert } from 'react-bootstrap';
-import  {Table as TableBT, Pagination } from 'react-bootstrap';
+import { Table as TableBT, Pagination } from 'react-bootstrap';
 
 export default class Table extends React.Component<Props, State> {
   source: any;
@@ -24,16 +24,13 @@ export default class Table extends React.Component<Props, State> {
   }
 
   getData = () => {
-    this.setState({
-      data: []
-    });
     /**
      * Генерируем задержку, для имитации загрузки данных с сервера и
      * демонстрации работы loader'а
      */
     let delay  = Math.floor(Math.random() * 3),
-        server = `https://reqres.in/api/page?`,
-        url    = `${server}delay=${delay}&page=${this.state.page}`;
+      server = `https://reqres.in/api/page?`,
+      url    = `${server}delay=${delay}&page=${this.state.page}`;
 
     axios.get( url, { cancelToken: this.source.token })
       .then( response => {
@@ -42,6 +39,9 @@ export default class Table extends React.Component<Props, State> {
           page: response.data.page,
           totalPages: response.data['total_pages']
         });
+      })
+      .catch( error => {
+        console.log(error);
       });
   };
 

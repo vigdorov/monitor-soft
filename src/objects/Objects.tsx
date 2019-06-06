@@ -18,9 +18,9 @@ import house from '../img/house.jpg';
 import FormGroup from "./FormGroup";
 
 
-export default class Objects extends React.Component<{}, State> {
+export default class Objects extends React.Component<Props, State> {
 
-  constructor (props: {}) {
+  constructor (props: Props) {
     super(props);
     this.state = {
       // Объект, в котором хранятся созданные экземпляры домов
@@ -270,4 +270,8 @@ interface State {
   modalEditType: string,
   modalEditRooms: string,
   modalEditFloors: string
+}
+
+interface Props {
+  onMsg: (msg: string) => void
 }
