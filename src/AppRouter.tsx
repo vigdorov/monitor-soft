@@ -14,51 +14,44 @@ import SigIn from './sigin/SigIn';
 import logo from './img/logo.png';
 
 // Подключаем систему уведомлений
-import Notify from './notification/notify';
+import Notify from './notification/Notify';
 
 // Подключаем авторизацию
 import Auth from './sigin/Auth';
-
 const auth = new Auth();
 
 export default class AppRouter extends React.Component<{}, State> {
+  notify: Notify;
 
   constructor (props: {}) {
     super(props);
     this.state = {
-      isLogin: false,
-      messages: {
-        counter: 0,
-        data: {}
-      }
+      // Состояние входа в систему
+      isLogin: false
     };
+    // сохраняем систему уведомлений для удобства
+    this.notify = Notify.getInstance();
   }
 
+  /**
+   * Метод создания уведомления
+   *
+   * @param {string} msg
+   */
+  handleNotify = (msg: string) => {
+    this.notify.showMessage(msg);
+  };
+
+  /**
+   * При монтаже компонента, проверяем авторизован ли пользователь
+   */
   componentDidMount () {
     this.isAuthenticated();
   }
 
-  handleNotify = (msg: string) => {
-    let id: number;
-    this.setState( prevState => {
-      id = prevState.messages.counter;
-      return {
-        messages: {
-          ...prevState.messages,
-          counter: id + 1,
-          data: {
-            ...prevState.messages.data,
-            [id]: msg
-          }
-        }
-      };
-    }, () => {
-      setTimeout( () => {
-        delete this.state.messages.data[id];
-      }, 5000);
-    });
-  };
-
+  /**
+   * Метод проверки авторизации пользователя
+   */
   isAuthenticated = () => {
     let isAuth = auth.isAuthenticated();
     if ( isAuth !== this.state.isLogin) {
@@ -69,6 +62,7 @@ export default class AppRouter extends React.Component<{}, State> {
   };
 
   render () {
+    // Ссылки скрытые от неавторизованных пользователей
     let protectedLinks = (
       <React.Fragment>
         <li className="nav-item nav-link">
@@ -84,10 +78,11 @@ export default class AppRouter extends React.Component<{}, State> {
       </React.Fragment>
     );
 
+    // Страницы скрытые от не авторизованных пользователей
     let protectedPages = (
       <React.Fragment>
         <Route path='/table/' component={() => {
-          return <Table />
+          return <Table onMsg={this.handleNotify}/>
         }} />
         <Route path='/objects/' component={() => {
           return <Objects onMsg={this.handleNotify}/>
@@ -97,10 +92,16 @@ export default class AppRouter extends React.Component<{}, State> {
 
     return (
       <Router>
+
+        {/* Верхнее меню приложения */}
         <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+
+          {/* Логотип приложения */}
           <a href="/" className="navbar-brand">
             <img src={logo} alt="Monitor Soft" height={50} />
           </a>
+
+          {/* Кнопка открывания меню на мобильных устройствах */}
           <button
             className="navbar-toggler"
             type="button"
@@ -124,11 +125,15 @@ export default class AppRouter extends React.Component<{}, State> {
                 </Link>
               </li>
               {
+                // Если пользователь авторизован показать защищенные ссылки
                 this.state.isLogin && protectedLinks
               }
               <li className="nav-item nav-link">
                 <Link to='/sigin/'>
-                  {this.state.isLogin ? 'Личный кабинет' : 'Авторизация'}
+                  {
+                    // Меняет название ссылки авторизации
+                    this.state.isLogin ? 'Личный кабинет' : 'Авторизация'
+                  }
                 </Link>
               </li>
             </div>
@@ -136,6 +141,8 @@ export default class AppRouter extends React.Component<{}, State> {
         </nav>
         <Route path='/' exact component={() => <General />} />
         {
+          // Если пользователь авторизован разрешить переход на защищенные
+          // страницы
           this.state.isLogin && protectedPages
         }
         <Route path='/sigin/' component={() => {
@@ -147,18 +154,11 @@ export default class AppRouter extends React.Component<{}, State> {
             />
           );
         }} />
-        <Notify messages={this.state.messages.data} />
       </Router>
     );
   }
 }
 
 interface State {
-  isLogin: boolean,
-  messages: {
-    counter: number,
-    data: {
-      [id: number]: string
-    }
-  }
+  isLogin: boolean
 }

@@ -9,28 +9,45 @@ import { Container, Row, Spinner, Alert } from 'react-bootstrap';
 import { Table as TableBT, Pagination } from 'react-bootstrap';
 
 export default class Table extends React.Component<Props, State> {
+  /**
+   * Компонент (страница) отрисовки таблицы
+   */
   source: any;
 
   constructor (props: Props) {
     super(props);
 
     this.state = {
+      // массив данных текущей страницы таблицы
       data: [],
+      // номер текущей страницы
       page: 1,
+      // общее количество страниц
       totalPages: 4
     };
 
+    // кенсел-токен запроса к серверу, чтобы использовать его в случае
+    // перехода пользователя на другую страницу до окончания загрузки
     this.source = axios.CancelToken.source();
   }
 
+  /**
+   * Метод получения данных таблицы с сервера
+   */
   getData = () => {
+    // Очищаем данные таблицы, чтобы показался Лоадер
+    this.setState({
+      data: []
+    });
     /**
      * Генерируем задержку, для имитации загрузки данных с сервера и
      * демонстрации работы loader'а
      */
     let delay  = Math.floor(Math.random() * 3),
       server = `https://reqres.in/api/page?`,
-      url    = `${server}delay=${delay}&page=${this.state.page}`;
+      url    = `${server}delay=${delay}&page=${this.state.page}`,
+      // сохраняем время начала запроса
+      timer  = new Date().getTime();
 
     axios.get( url, { cancelToken: this.source.token })
       .then( response => {
@@ -39,9 +56,12 @@ export default class Table extends React.Component<Props, State> {
           page: response.data.page,
           totalPages: response.data['total_pages']
         });
+        // высчитываем время запроса и выводим его в уведомлениях
+        let endTimer = (new Date().getTime() - timer) / 1000;
+        this.props.onMsg('Данные таблицы получены за ' + endTimer + ' секунд.');
       })
       .catch( error => {
-        console.log(error);
+        console.log();
       });
   };
 
@@ -106,6 +126,9 @@ export default class Table extends React.Component<Props, State> {
       body.push(<tr key={i}>{tr}</tr>);
     });
 
+    /**
+     * Генерируем кнопки пагинации
+     */
     for (let i = 1; i <= this.state.totalPages; i++) {
       paginationItems.push(
         <Pagination.Item
@@ -117,6 +140,7 @@ export default class Table extends React.Component<Props, State> {
       );
     }
 
+    // Складываем таблицу для удобства в переменную
     let renderTable = (
       <Container>
         <TableBT striped bordered hover responsive>
@@ -135,6 +159,7 @@ export default class Table extends React.Component<Props, State> {
       </Container>
     );
 
+    // Создаем лоадер
     let loader = (
       <Container>
         <Row className="justify-content-center">
@@ -150,14 +175,18 @@ export default class Table extends React.Component<Props, State> {
 
     return (
       <div className="container">
-        {this.state.data.length ? renderTable : loader}
+        {
+          // Если идет запрос к серверу, то показываем лоадер, если данные
+          // получены, то выводим таблицу
+          this.state.data.length ? renderTable : loader
+        }
       </div>
     );
   }
 }
 
 interface Props {
-
+  onMsg: (msg: string) => void
 }
 
 interface State {

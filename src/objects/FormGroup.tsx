@@ -22,7 +22,7 @@ export default class FormGroup extends React.Component<Props, State> {
    * @param e - объект события
    */
   handleChange = (e: any) => {
-    let isErrorMsg = this.props.checkInputFunction(e.target.value);
+    let isErrorMsg = this.props.checkInputFunction(e, e.target.value);
     this.setState({
       errorMsg: isErrorMsg
     });
@@ -62,7 +62,7 @@ interface Props {
   type: string,
   placeholder: string,
   value: string,
-  checkInputFunction: (inputValue: string) => string,
+  checkInputFunction: (event: any, inputValue: string) => string,
   getInputValue: (event: any) => void
 }
 

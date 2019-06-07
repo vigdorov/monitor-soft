@@ -19,6 +19,9 @@ import FormGroup from "./FormGroup";
 
 
 export default class Objects extends React.Component<Props, State> {
+  modalCheckForm: {
+    [name: string]: boolean
+  };
 
   constructor (props: Props) {
     super(props);
@@ -34,8 +37,15 @@ export default class Objects extends React.Component<Props, State> {
       modalEditKey: 0,
       modalEditType: '',
       modalEditRooms: '',
-      modalEditFloors: ''
+      modalEditFloors: '',
+      modalEditSuccess: true
     };
+
+    // Объект хранит информацию, корректно ли заполнены поля редактирования
+    this.modalCheckForm = {
+      modalEditRooms: true,
+      modalEditFloors: true
+    }
   }
 
   /**
@@ -47,6 +57,8 @@ export default class Objects extends React.Component<Props, State> {
   handleCreateHouse = (choice: number) => {
     let houseName = this.state.factory.getNamesInstructions()[choice],
         newHouse = this.state.factory.makeStructure(houseName);
+
+    this.props.onMsg('Объект "' + houseName + '" построен.');
 
     this.setState( (prevState) => {
       let newData = {...prevState.data};
@@ -64,6 +76,7 @@ export default class Objects extends React.Component<Props, State> {
   handleEditHouse = () => {
     this.setState( prevState => {
       let editHouse = prevState.data[prevState.modalEditKey];
+      this.props.onMsg('Объект "' + editHouse.type + '" отредактирован.');
       editHouse.rooms = Number(prevState.modalEditRooms);
       editHouse.floors = Number(prevState.modalEditFloors);
       return {
@@ -83,6 +96,7 @@ export default class Objects extends React.Component<Props, State> {
   handleDeleteHouse = (id: number) => {
     this.setState( prevState => {
       let newData = {...prevState.data};
+      this.props.onMsg('Объект "' + newData[id].type + '" удален.');
       delete newData[id];
       return {
         data: newData
@@ -102,22 +116,60 @@ export default class Objects extends React.Component<Props, State> {
   };
 
   /**
+   * Метод проверяет корректно ли заполнены все поля при редактировании
+   * объекта и меняет состояние кнопки разрешено\запрещено
+   */
+  handleCheckForm = () => {
+    let check = true,
+      form  = this.modalCheckForm;
+
+    for (let name in form) {
+      if (!form[name]) {
+        check = false;
+      }
+    }
+
+    if (check !== this.state.modalEditSuccess) {
+      this.setState({
+        modalEditSuccess: check
+      });
+    }
+  };
+
+  /**
+   * Метод меняет состояние корректности заполнения конкретного поля,
+   * и запускает общую проверку можно ли сохранять данные формы редактирования
+   * объекта
+   *
+   * @param {string} name - имя формы
+   * @param {boolean} variant - правильно ли заполнена
+   */
+  handleChangeCheckForm = (name: string, variant: boolean) => {
+    this.modalCheckForm[name] = variant;
+    this.handleCheckForm();
+  };
+
+  /**
    * Метод проверки полей ввода для формы редактирования домов
    *
    * @param {string} inputValue - значение поля для проверки
    * @returns {string} - возвращает сообщение об ошибке, если условия
    *                     заполнения поля нарушены
    */
-  handleCheckInput = (inputValue: string) => {
+  handleCheckInput = (e: any, inputValue: string) => {
     if (inputValue === '') {
+      this.handleChangeCheckForm(e.target.id, false);
       return 'Поле не должно быть пустым!';
     }
     if (isNaN(Number(inputValue))) {
+      this.handleChangeCheckForm(e.target.id, false);
       return 'Допускаются только числа!';
     }
     if (Number(inputValue) < 1 || Number(inputValue) > 10) {
+      this.handleChangeCheckForm(e.target.id, false);
       return 'Значение не может быть меньше 1 и больше 10!';
     }
+    this.handleChangeCheckForm(e.target.id, true);
     return '';
   };
 
@@ -144,17 +196,21 @@ export default class Objects extends React.Component<Props, State> {
    * @returns {any} - возвращает JSX модуль для рендера
    */
   render () {
+    // Инициализируем данный карточек
     let data = this.state.data,
         objectCards: any[] = [];
 
+    // Запускаем цикл создания карточек объектов
     for (let key in data) {
       let imgSrc = '',
           item = data[key];
 
+      // Определяем какую картинку выбрать для карточки
       if (item.type === 'Гараж') imgSrc = garage;
       else if (item.type === 'Квартира') imgSrc = apartment;
       else if (item.type === 'Частный дом') imgSrc = house;
 
+      // Создаем карточку объекта
       objectCards.push(
         <Col
           xs={12} sm={6} lg={4} key={key}
@@ -163,14 +219,25 @@ export default class Objects extends React.Component<Props, State> {
           <Card>
             <Card.Img variant="top" src={imgSrc}/>
             <Card.Body>
+
+              {/* Заголовок карточки */}
               <Card.Title>{item.type}</Card.Title>
+
+              {/* Тело карточки */}
               <Card.Text>
                 Комнат: <b>{item.rooms}</b>, Этажей: <b>{item.floors}</b>
               </Card.Text>
+
+              {/* Кнопка редактирования объекта */}
               <Button
                 variant="warning"
                 onClick={() => {
                   this.handleShowHideEditModal(true);
+                  this.modalCheckForm = {
+                    modalEditRooms: true,
+                    modalEditFloors: true
+                  };
+                  this.handleCheckForm();
                   this.setState({
                     modalEditKey: Number(key),
                     modalEditType: data[key].type,
@@ -182,6 +249,8 @@ export default class Objects extends React.Component<Props, State> {
                 Изменить
               </Button>
               <span> </span>
+
+              {/* Кнопка удаления объекта */}
               <Button
                 variant="danger"
                 onClick={() => this.handleDeleteHouse(Number(key))}
@@ -201,14 +270,21 @@ export default class Objects extends React.Component<Props, State> {
           { objectCards }
         </Row>
 
+        {/* Модальное окно редактирования объекта */}
         <Modal
           show={this.state.modalEditShow}
           onHide={() => this.handleShowHideEditModal(false)}>
+
+          {/* Заголовок модально окна */}
           <Modal.Header closeButton>
             <Modal.Title>Редактировать здание</Modal.Title>
           </Modal.Header>
+
+          {/* Тело модально окна */}
           <Modal.Body>
             <Form>
+
+              {/* поле ввода с указанием Типа объекта */}
               <Form.Group controlId="exampleForm.ControlInput1">
                 <Form.Label>Тип объекта: </Form.Label>
                 <Form.Control
@@ -216,6 +292,8 @@ export default class Objects extends React.Component<Props, State> {
                   defaultValue={this.state.modalEditType}
                   disabled/>
               </Form.Group>
+
+              {/* поле ввода с указанием количества комнат */}
               <FormGroup
                 id='modalEditRooms'
                 type='text'
@@ -225,6 +303,8 @@ export default class Objects extends React.Component<Props, State> {
                 checkInputFunction={this.handleCheckInput}
                 getInputValue={this.handleGetInputValue}
               />
+
+              {/* поле ввода с указанием количества этажей */}
               <FormGroup
                 id='modalEditFloors'
                 type='text'
@@ -236,16 +316,23 @@ export default class Objects extends React.Component<Props, State> {
               />
             </Form>
           </Modal.Body>
+
+          {/* кнопки модального окна */}
           <Modal.Footer>
+
+            {/* кнопка отмены редактирования */}
             <Button
               variant="secondary"
               onClick={() => this.handleShowHideEditModal(false)}
             >
               Отмена
             </Button>
+
+            {/* кнопка подтверждения редактирования */}
             <Button
               variant="primary"
               onClick={this.handleEditHouse}
+              disabled={!this.state.modalEditSuccess}
             >
               Сохранить
             </Button>
@@ -269,7 +356,8 @@ interface State {
   modalEditKey: number,
   modalEditType: string,
   modalEditRooms: string,
-  modalEditFloors: string
+  modalEditFloors: string,
+  modalEditSuccess: boolean
 }
 
 interface Props {
